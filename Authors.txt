@@ -1,0 +1,12 @@
+First Author: Deval Mehta 
+              Final Year 
+              Department of Electrical and Electonics Engineering 
+              National Institute of Technology, Tiruchirappalli, India.  
+              
+Second Author: Alessandro Bernardini 
+               Scientific Staff 
+               Institute of Electronic Design and Automation 
+               Technical University of Munich, Germany. 
+               
+License: GNU GPL v3 License 
+         For more information please see license terms and conditions. 
