@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # IMPORTANT GUIDELINES:  to whom so ever it may concern who is refering this code for extending it or for study purpose
 # Please read the NOTE instructions wherever mentioned carefully, as they describe the all the information brielfy!
