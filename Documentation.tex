@@ -1,0 +1,3480 @@
+\documentclass[a4paper]{article}
+\usepackage[ascii]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage{color}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{hyperref}
+\hypersetup{pdftex, colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=, pdfauthor=Akshat Mehendale, pdfsubject=, pdfkeywords=}
+% Page layout (geometry)
+\setlength\voffset{-1in}
+\setlength\hoffset{-1in}
+\setlength\topmargin{1in}
+\setlength\oddsidemargin{1.7361in}
+\setlength\textheight{7.693in}
+\setlength\textwidth{4.8888993in}
+\setlength\footskip{1.0in}
+\setlength\headheight{1in}
+\setlength\headsep{0cm}
+% Footnote rule
+\setlength{\skip\footins}{1.1777999mm}
+\renewcommand\footnoterule{\vspace*{-0.007in}\setlength\leftskip{0pt}\setlength\rightskip{0pt plus 1fil}\noindent\textcolor[rgb]{0.0,0.0,0.039215688}{\rule{0.33\columnwidth}{0.007in}}\vspace*{1mm}}
+% Pages styles
+\makeatletter
+\newcommand\ps@MPi{
+  \renewcommand\@oddhead{}
+  \renewcommand\@evenhead{}
+  \renewcommand\@oddfoot{}
+  \renewcommand\@evenfoot{\@oddfoot}
+  \renewcommand\thepage{\arabic{page}}
+}
+\newcommand\ps@MPFi{
+  \renewcommand\@oddhead{}
+  \renewcommand\@evenhead{}
+  \renewcommand\@oddfoot{}
+  \renewcommand\@evenfoot{}
+  \renewcommand\thepage{\arabic{page}}
+}
+\newcommand\ps@MP{
+  \renewcommand\@oddhead{}
+  \renewcommand\@evenhead{}
+  \renewcommand\@oddfoot{}
+  \renewcommand\@evenfoot{}
+  \renewcommand\thepage{\arabic{page}}
+}
+\makeatother
+\pagestyle{MP}
+\title{}
+\author{Akshat Mehendale}
+\date{2013-12-05T01:26:00Z}
+\begin{document}
+\clearpage\clearpage\pagestyle{MP}
+{\centering\color[rgb]{0.0,0.0,0.039215688}
+\textcolor{black}{v2NuSMV v0.1}
+\par}
+
+{\centering\color[rgb]{0.0,0.0,0.039215688}
+\textcolor{black}{A Translator from a subset of Verilog HDL to the input
+language of Open Source Formal Verification Tool NuSMV}
+\par}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+Deval Mehta}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor{black}{Alessandro Bernardini}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor{black}{December 1}\textcolor{black}{, 2013}}
+
+
+\bigskip
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor{black}{Version: 0:1 (initial commit).}}
+
+
+\bigskip
+
+{\color{black}
+First Author: Deval Mehta \ }
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor{black}{Second Author: Alessandro Bernardini}}
+
+
+\bigskip
+
+{\color{black}
+Contact:\ }
+
+{\color{black}
+deval.mehta1092@gmail.com}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor{black}{alessandro.bernardini.tum@gmail.com}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor{black}{License: GNU GPL.}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor{black}{http://www.gnu.org/licenses/gpl.html}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor{black}{Disclaimer: THERE IS NO WARRANTY FOR THE PROGRAM
+(v2NuSMV and all its provided components), TO THE EXTENT PERMITTED BY
+AP-PLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
+HOLDERS (Deval Mehta and Alessandro Bernardini) AND/OR OTHER PARTIES
+PROVIDE THE PROGRAM AS IS WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH
+YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR OR CORRECTION.}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor{black}{IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR
+AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO
+MODIFIES AND/OR CONVEYS THE PROGRAM AS PER-MITTED ABOVE, BE LIABLE TO
+YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR
+CONSEQUENTIAL DAM-AGES ARISING OUT OF THE USE OR INABILITY TO USE THE
+PRO-GRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+DAM-AGES.}}
+
+
+\bigskip
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor{black}{IN THE PRESENT VERSION THE PROGRAM WAS TESTED ONLY FOR
+TRANSLATING N-BIT BINARY COUNTER AND A TRAFFIC LIGHT CONTROLLER CODE,
+WHICH WAS SUCCESSFUL; SO BUGS ARE EXPECTED: PLEASE REPORT ALL KIND OF
+BUGS AND ISSUES YOU MAY FACE.\ }}
+
+\clearpage\clearpage\setcounter{page}{1}\pagestyle{MPi}
+\thispagestyle{MPFi}
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textbf{Abstract:\ }}\textrm{Model Checking Tools such as the
+Symbolic Model Verifier (SMV) and NuSMV are available for reliable
+verification of system designs. These tools can automatically check the
+formal specifications of \ a design. However most of the
+state-of-the-art model checkers (like SMV) are proprietary. This method
+of formal verification is applied to timed and untimed asynchronous
+protocols to verify the correctness of hardware design. BDD-based and
+SAT-based symbolic methods are applied for model checking in various
+hardware verification techniques. \ However, the major problem is that
+the open source model checker NuSMV cannot accept Verilog HDL as the
+input code. \ In this project, for solving the above mentioned problem,
+we have implemented a translator from a subset of Verilog HDL code to
+the input language for the NuSMV model checker. We have developed the
+translator using PLY (Python Lex-Yacc), an implementation of lex and
+yacc parsing tools for Python. \ In this way the open source model
+checker tool NuSMV can be used for hardware verification on gate level
+Verilog netlists.\ }}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textbf{I \ INTRODUCTION:}}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textbf{\ \ }}\textrm{\textbf{\ \ }}\textrm{Electronic Devices
+operate in a variety of environments where their numbers are increasing
+yearly. Much social system infrastructure is dependent on this
+technology. The reliability of this technology, especially pertaining
+to the digital systems, is essential to maintaining the function and
+safety of the entire system. For this reason, a desirable design
+environment is one that enables users to design highly reliable
+systems, which operate accurately according to the specifications, at
+low cost and high efficiency[1], [2] . During software development
+process, software artifacts are produced. Consistency among these
+artifacts should be verified to ensure error-free product. In software
+product line development and even in product line engineering,
+consistency becomes more important because commonalities and
+variability increase the complexity of relationship among artifacts.
+Thus consistency in this field is becoming an important issue as more
+and more complex critical systems are developed this way [3], [4].\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ There are model checking tools for hardware
+design, such as the Symbolic Model Checker(SMV) [5], and the open
+source NuSMV [6]. \ But the problem with these model checkers is that
+these tools is that they do not accept Verilog HDL or VHDL as the
+input\ }\textrm{language. In addition when considering the practical
+circumstances at a development site, it is difficult to implement the
+same design several times in different languages because of the
+limitations such as the cost and the delivery time and the
+possibilities of errors during manual translation.\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ Translation between data formats, between
+multimedia mark-up languages, between modeling languages and between
+programming languages are classic problems in computer science and
+software engineering. There are two traditional approaches to automatic
+translation, namely direct translation and translation via an
+intermediate language. The recent advent of extensible markup language
+(XML) and extensible style sheet language transformations (XSLT)
+provides a practical means for facilitating direct translation with
+enhanced maintainability of both the generic translator (i.e. XSLT)
+\ and mapping specifications (i.e. style sheets). [7]}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ In this study, we present the design of a
+Translator, v2NuSMV, which performs the job of translation from a
+subset of Verilog HDL to the input language for NuSMV. The v2NuSMV
+translates from the netlist generated from the gate level synthesis of
+Verilog HDL. v2NuSMV uses the programming language, Python [8] and its
+parsing tools, lex and yacc [9], [10] to implement the parsing of the
+netlist generated after the synthesis of Verilog HDL. The process of
+parsing is carried out with the reference to the grammar described for
+Verilog HDL in (Verilog Formal Syntax Verification) [11], [12]. After
+the job of parsing it stores the required information for translation.
+Here in this project, we have succeeded in translating a subset of
+Verilog HDL to the input language of the direct open source model
+checking language NuSMV by describing a system design, in conjunction
+with the specification to be met. To evaluate the syntactic merits and
+the description capabilities via case studies, we have compared and
+evaluated two important cases, which are time consuming to be written
+in NuSMV using conventional methods or manually, but this is
+accomplished automatically by describing the systems in the Verilog HDL
+and using v2NuSMV to create the target language in NuSMV.\ }}
+
+{\rmfamily\bfseries\color[rgb]{0.0,0.0,0.039215688}
+II FEATUERS OF v2NuSMV:}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textbf{\ \ }}\textrm{\textbf{\ \ }}\textrm{v2NuSMV has been
+designed for translation of a particular subset of systems written in
+Verilog HDL to model checking input language NuSMV for the verification
+of the\ }\textrm{system{\textquotesingle}s hardware. The subset
+includes the systems which are described in Verilog HDL with the
+statements and the grammar which can be parsed by v2NuSMV, parses only
+a particular subset of Verilog HDL. There is a defined sequential way
+to translate from Verilog HDL to NuSMV . The translation is from the
+netlist generated by the synthesis of the Verilog HDL code. One can
+depict that after the netlist is generated for the particular Verilog
+HDL code, the first step is to parse the netlist correctly and thus
+storing the required information for the translation to NuSMV target
+input language.}\textrm{\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ \ v2NuSMV, the parser based translator consists
+of the following three analysis models:\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{1) all information analysis model (obtained by parsing algorithm
+and its concept)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{2) Extraction of information.}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{3) Semantic constraint analysis model or the Translation Model (
+to generate the target code with reference to the semantics of NuSMV
+kept in mind)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ A prototype based on the above method has been
+built and the experimental testing of the translator on the systems
+considered show that the proposed method is effective for the
+implementation of code translation from netlist of Verilog HDL to NuSMV
+and the development of a practical translation system thus can be
+achieved.}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ The above listed analysis models are described
+in the section of Design Policy of v2NuSMV which is described next.\ }}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textbf{III DESIGN POLICY OF v2NuSMV:\ }}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ The three analytic models of v2NuSMV listed
+above are explained in detail in this section which constitutes the
+design of v2NuSMV.\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textit{Input Language Design Policy and Parsing Concept\ }}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ The input language that needs to be translated
+is Verilog HDL. v2NuSMV translates from the netlist generated by the
+synthesis of the system designed in Verilog HDL. The\ }\textrm{grammar
+of \ a programming language is important because it is used in
+developing program analysis and modification tools. Sometimes programs
+are written in dialects-minor variations of standard languages.
+Normally, grammars of standard languages are available but grammars of
+dialects may not be available. As each and every language follows a
+rule of set of grammars, thus for Verilog HDL also a particular set of
+grammar rules are defined and must be followed for translation. The
+grammar for designing a system Verilog HDL is taken with reference to
+Verilog Formal Syntax Specification.\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ After the netlist is generated from the gate
+level synthesis of the system designed in Verilog HDL code, the netlist
+has to be parsed. Parsing is divided into two parts, a lexer and a
+parser. The lexer is used to read the source file and convert each
+structure to the tokens, depending upon their meaning. The parser will
+read this token list and will generate a tree-representation of the
+code in the input file. LR parsing even has a variety of applications.
+LR parsers can be constructed to recognize virtually all programming
+language constructs for which context free grammar can be written. The
+LR parsing method is more general than operator precedence or any of
+the other common shit-reduce techniques, yet it can be implemented with
+the same efficiency as the other methods. LR Parsing also dominates the
+common forms of the top down parsing without trace back. LR parsers can
+thus detect the syntactic errors as soon as it is possible to do so on
+a left to right scan of the input. The LR parsing is also divided into
+two parts, i.e. a driving table and producing a parsing table which is
+equivalent to the lexer and the parser in general [13], [14].\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textit{Extraction of Information}}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textit{\ \ }}\textrm{\textbf{\textit{\ \ }}}\textrm{The netlist
+that has been parsed represents a semantic meaning. Each and every
+variable or an identifier represents a module item which can be a port,
+wire, module instance object, assign statement, and the list can go on
+if the grammar which v2NuSMV can parse is extended by referring to
+NangateOpenCellLibrary\_PDKv1\_2\_v2008 [15] . To identify to which
+module item the particular identifier belongs, comes under the
+model-extraction of information. v2NuSMV does this identification by
+segregating the identifiers into the above mentioned different sections
+which are treated as classes.\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ v2NuSMV consists of classes which are solely
+confined to the different module items mentioned above and contains
+only the identifiers that belong this category. For now it has the
+class wire, port, module instantiation, assign. And all the above
+classes are called from a separate class module\_items, as the name
+suggests, which consists of all the possible module items in a
+particular module. These classes contain all the information of the
+identifiers that belong to them.}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{The classes are explained as below:\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{1) Class wire: Class wire models all the wires contained in a
+module. Wires can be with or without range as the grammar suggests.
+v2NuSMV displays all the information of the wires (with or without
+range). Although the information of class wires is not of prime
+importance in NuSMV code, still it is used further by the class module
+instantiation and it also depicts separately the description of
+wires.\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{2) Class port: Class port models all the ports, which are of two
+types:}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{(i) Module Ports}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{(ii) Module Instance ports\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{Both the module ports and the module instantiation ports are
+stored separately in the class port. Each port has its identifier and
+its corresponding port connection. This information is further used by
+the class module instantiation for getting the connections of the ports
+to different modules.\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{3) Class module instantiation: Till now one can make the
+inference that this class is the most important of all the classes, as
+it uses the information stored in the class wire and the class port and
+the information contained in this class is used for generation of the
+NuSMV code. The class module instantiation models the name of all the
+module instances, their particular module types and all the ports and
+their connections, which is extracted from the class port and the class
+wire.}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{4) Class assign: \ Class assign models the particular assign
+statements listed in the netlist of the input code. This contains the
+information of the particular identifier and the value assigned to it
+in a separate list of tuples.\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ \ Once the information is extracted by passing
+respective identifiers to these classes, it can used for the
+translation process further. The importance of the function of
+\ parsing is also depicted in this model, as the particular information
+about any variable is also displayed by the translator v2NuSMV, which
+is shown ahead in the report by taking a particular case.\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textbf{IV LISTS OF v2NuSMV}}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ Fig (1) mentions the list used in v2NuSMV for
+extracting the information. These lists are self described about the
+information they contain as mentioned in the Fig (1). The important
+point to be noted is that the lists relating to the module instances,
+which contain the information regarding the name of the module
+instance, the type of the module, the number of ports and their
+connections are in a specific order as parsed from left to right and
+thus the information stored in the lists can be accessed without any
+fear of derangement.}}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ }
+
+\begin{center}
+\begin{minipage}{6.63542in}
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.name \# String}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.ports \#list of port objects for the Module Ports\ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.port \# list of the input and output port objects only}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.wires \#list of wire objects}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.items \#list of item objects}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.connections\_in\_module \#stores the information of what is
+connected to input output ports within the module.}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.tot\_modules \# Stores the total no. of Module Types\ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.tot\_modules\_1 \# Stores the total number of Module
+Instances}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.tot\_no\_ports \#Stores the total no. of expressions
+appearing in the port of the Module Instances \ \ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.indi\_ports \# stores the total no. of ports in a
+particular Module Instantiation \ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.len\_port \#Stores the total no. of expressions in each
+Module Instance}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.output \#Stores the last expression of each and every
+Module Instance}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.output\_connection \#Gives the Connection of the particular
+Module Instance and its output port!!\ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.rem\_ports\#A list of the Remaining ports except the last
+port of each Module Instance}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.rem\_ports\_conn \# A dictionary stroing the remaining
+ports of a particular Module Instance and its name\ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.o\_ports \# Output ports of a Module}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.i\_ports \# Input Ports of a Module\ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.all\_ports \# All the Ports}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.port\_type \# Port types of a Module in a specific order\ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.width = None \# Contains the list of Width of each Module
+Port\ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.w\_i\_port \# Contains the width of the input ports of a
+Module\ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.w\_o\_port \ \# Contains the width of the output ports of a
+Module \ \ \ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.test \ \# A test variable}
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+
+\begin{center}
+\begin{minipage}{6.51042in}
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.allassigns \ \# A list containing the particular variables
+on which the {\textquotesingle}assign{\textquotesingle} statement is
+implemented!}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ self.allvalues \ \# A list containing the particular values
+assigned in the same order as the allassign list}
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \textrm{Fig (1): Lists of v2NuSMV.}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textbf{V SEMANTIC CONSTRAINT ANALYSIS MODEL (TRANSLATION
+MODEL)}}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ After all the information is stored in the
+classes, it can be accessed as and when required and is used for the
+aim of the project, i.e. translation to the input language of the model
+checker NuSMV. v2NuSMV in this section does the most important part of
+translation which is explained below for different classes.}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ For generation of NuSMV code, it is extremely
+necessary to have the information of the source and the loads of each
+and every wire, the module types and their particular output logic
+function, the input and the output ports. This information is extracted
+from the classes that store the particular information of each and
+every identifier that they contain. v2NuSMV performs this task very
+precisely and is generalized as much as possible. v2NuSMV accomplishes
+this task based upon the module types of the module instances. The
+module types identified with reference to the
+NangateOpenCellLibrary\_PDKv1\_2\_v2008, belong to two categories :\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{1) FF (Flip Flop) Module type\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{2) Logic Gate Module type\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{For the FF Module type, the last two ports of the module
+instance are considered as the output ports and the others are the
+input ports. So for generating the NuSMV code, the module type is
+identified first by searching it in a particular dictionary (which
+stores the module types) and then the output ports are treated by the
+above mentioned manner. Coming to the logic function of the FF, it is
+defined with reference to the logic specified in the
+NangateOpenCellLibrary\_PDKv1\_2\_v2008, the logic function is defined.
+The example of this type is as shown in the Case I in the Fig (2), (3)
+and (4).\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textit{Case I}}\textrm{: FF Module Type}}
+
+
+\bigskip
+
+{\centering \par}
+
+\begin{center}
+\begin{minipage}{5.98194in}
+{\centering\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DFF\_X1 {\textbackslash}counter\_reg[0] \ ( .D(N80), .CK(clk),
+.Q(n81), .QN(n50) );}
+\par}
+
+
+\bigskip
+\end{minipage}
+\end{center}
+{\centering\color[rgb]{0.0,0.0,0.039215688}
+\textrm{Fig (2): Identification of D-FF in Netlist of Verilog HDL}
+\par}
+
+{\centering \par}
+
+\begin{center}
+\begin{minipage}{5.96875in}
+{\centering\color[rgb]{0.0,0.0,0.039215688}
+\texttt{ESC\_counter\_reg[0]:
+DFF\_X1(N80);-{}-{}-{}-{}-{}-{}-{}-{}-{\textgreater} Generated in the
+VAR section of the Module main of NuSMV code\ }
+\par}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ n50 :=
+ESC\_counter\_reg[0].QN;-{}-{}-{}-{}-{}-{}-{\textgreater}Generated in
+the DEFINE section of the Module main of NusMV code\ }
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ n81 :=
+ESC\_counter\_reg[0].Q;-{}-{}-{}-{}-{}-{}-{}-{\textgreater} Generated
+in the DEFINE section of the Module main of NuSMV code}}
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+{\centering\color[rgb]{0.0,0.0,0.039215688}
+\textrm{Fig (3): Corresponding output of D-FF in NuSMV}
+\par}
+
+{\centering \par}
+
+\begin{center}
+\begin{minipage}{5.96875in}
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+MODULE
+DFF\_X1(D)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+VAR\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Q: boolean;
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ QN: boolean;
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+ASSIGN\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ init(Q) := FALSE;
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ init(QN) := TRUE;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ next(Q) := D;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ next(QN) := !D;}
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+{\centering\color[rgb]{0.0,0.0,0.039215688}
+\textrm{Fig (4): Corresponding logic function of D-FF in NuSMV}
+\par}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textit{Case II:\ }}\textrm{Logic Gate Module Type\ }}
+
+
+
+\begin{center}
+\begin{minipage}{5.90139in}
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{AOI211\_X1 U71 ( .C1(n45), .C2(n62), .A(n72), .B(n68), .ZN(N82)
+);}}
+\end{minipage}
+\end{center}
+
+\bigskip
+
+{\centering\rmfamily\color[rgb]{0.0,0.0,0.039215688}
+Fig (5): Identification of Logic Gate in Netlist of Verilog HDL
+\par}
+
+{\centering \par}
+
+\begin{center}
+\begin{minipage}{5.90139in}
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+U71: AOI211\_X1(n45, n62, n72, n68);-{}-{}-{}-{}-{}-{}-{\textgreater}
+Generated in the VAR section of the Module main of the NuSMV code\ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+N82 := U71.OUT;-{}-{}-{}-{}-{}-{}-{}-{}-{\textgreater} Generated in the
+DEFINE section of the Module main of NuSMV code\ }
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+{\centering\color[rgb]{0.0,0.0,0.039215688}
+\textrm{Fig (6): Corresponding output of Logic Gate in NuSMV}
+\par}
+
+{\centering \par}
+
+\begin{center}
+\begin{minipage}{6.00417in}
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+MODULE AOI211\_X1(A,B,C1,C2)}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+DEFINE}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ OUT :=!(A{\textbar}B{\textbar}(C1\&C2));}
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+{\centering\color[rgb]{0.0,0.0,0.039215688}
+\textrm{Fig (7): Corresponding Logic function of the Logic Gate in
+NuSMV}
+\par}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{For the Module Types other than FF, i.e. the case can be an AND
+gate with two or three inputs, or a NOR gate with three or four inputs,
+etc. the last port contained in the port list of the corresponding
+module instance is the output port and hence the particular wire has
+its source in this module instance. All the other ports in the module
+instance are the input ports. This is shown by an example as shown in
+the Case II in Fig (5), (6) and (7).\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textit{Note:\ }}\textrm{The above observation is being made
+from the netlist generated by the Verilog HDL code, and comparing it
+with the module types listed in the
+NangateOpenCellLibrary\_PDKv1\_2\_v2008.\ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{v2NuSMV does this task of extraction of information by creating
+a list of all the output ports, the list of all the corresponding input
+ports and the module types and their module instances in the same
+order. The only part remaining now to be translated that of the assign
+statements in the netlist. The assign statements are stored in a
+different class as already mentioned above, containing the required
+information and this information is placed in the initialization part
+of the input language of NuSMV. Thus by creating these lists it is able
+to extract the information in a specific order and the generation of
+NuSMV code is accomplished.}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ The above method of creating classes for
+storing the information and then extracting the necessary information
+through lists was tested on two particular cases of system designed in
+Verilog HDL. The first one is a simple 2 bit Binary counter and the
+second one is a Traffic Light Controller. The code is written in
+Verilog HDL and verified for the testing in ModelSim [16] and after the
+verification the netlist generated by the gate level synthesis of the
+code was given as the input to v2NuSMV and the final result of the
+v2NuSMV \ was the generation of the input language of NuSMV by the
+translation process as mentioned above. Also the code generated was
+tested for operation and results obtained were up to the mark and are
+listed from the next page onwards.\ }}
+
+{\centering\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\ \ }\textrm{\ \ }\textrm{\ \ }
+\par}
+
+\begin{center}
+\begin{minipage}{6.06667in}
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+module counter ( clk, value, reset, carry\_out );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ output [1:0] value;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ input clk, reset;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ output carry\_out;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ wire N5,N6,N7,n4,n5,n6;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ wire [1:0] n7;}
+
+
+\bigskip
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ DFF\_X1 {\textbackslash}value\_reg[0] \ ( .D(N5), .CK(clk),
+.Q(value[0]), .QN(n5) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ DFF\_X1 {\textbackslash}value\_reg[1] \ ( .D(N6), .CK(clk),
+.Q(value[1]), .QN(n4) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ DFF\_X1 carry\_out\_reg ( .D(N7), .CK(clk), .Q(carry\_out) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NOR3\_X1 U9 ( .A1(n4), .A2(reset), .A3(n5), .ZN(N7) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ MUX2\_X1 U10 ( .A(N5), .B(n6), .S(n4), .Z(N6) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NOR2\_X1 U11 ( .A1(reset), .A2(n5), .ZN(n6) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NOR2\_X1 U12 ( .A1(reset), .A2(value[0]), .ZN(N5) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+endmodule}
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+{\centering\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\textrm{Fig(8.a): Netlist description of a 2 bit binary counter in
+Verilog HDL}
+\par}
+
+
+\bigskip
+
+
+
+\begin{center}
+\begin{minipage}{6.06667in}
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+MODULE DFF\_X1(D)}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+VAR}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Q: boolean;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ QN: boolean;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+ASSIGN}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ init(Q) := FALSE;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ init(QN) := TRUE;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ next(Q) := D;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ next(QN) := !D;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+MODULE NOR3\_X1(A1,A2,A3)}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+DEFINE}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ OUT :=!(A1{\textbar}A2{\textbar}A3);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+MODULE MUX2\_X1(Ain,Bin,Sin)}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+DEFINE}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ OUT :=(!Sin\&Ain){\textbar}(Sin\&Bin);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+MODULE NOR2\_X1(A1,A2)}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+DEFINE}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ OUT :=!(A1{\textbar}A2);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+MODULE main}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+VAR}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ reset: boolean;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ ESC\_value\_reg[0]: DFF\_X1(N5);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ ESC\_value\_reg[1]: DFF\_X1(N6);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ carry\_out\_reg: DFF\_X1(N7);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ U9: NOR3\_X1(n4, reset, n5);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ U10: MUX2\_X1(N5, n6, n4);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ U11: NOR2\_X1(reset, n5);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ U12: NOR2\_X1(reset, value[0]);\ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+ASSIGN}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ init(reset) := TRUE;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+DEFINE}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ n5 := ESC\_value\_reg[0].QN;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ value[0] := ESC\_value\_reg[0].Q;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ n4 := ESC\_value\_reg[1].QN;}
+
+
+\bigskip
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+
+\begin{center}
+\begin{minipage}{5.96875in}
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ value[1] := ESC\_value\_reg[1].Q;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ carry\_out := carry\_out\_reg.Q;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ N7 := U9.OUT;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ N6 := U10.OUT;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ n6 := U11.OUT;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ N5 := U12.OUT;}
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+{\centering\rmfamily\color[rgb]{0.0,0.0,0.039215688}
+Fig(8.b): v2NuSMV based translation of a 2 bit binary counter into input
+language of NuSMV
+\par}
+
+
+\bigskip
+
+
+\bigskip
+
+
+
+\begin{center}
+\begin{minipage}{6.04653in}
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+module traffic\_light\_controller ( clk, reset, north\_south, east\_west
+);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ output [2:0] north\_south;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ output [2:0] east\_west;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ input clk, reset;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ wire \ \ N80, N81, N82, N83, N85, N96, n40, n41, n42, n45, n46, n47,
+n48, n49,}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ n50, n51, n52, n53, n54, n55, n56, n57, n58, n59, n60,
+n61, n62, n63,}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ n64, n65, n66, n67, n68, n69, n70, n71, n72, n73, n74,
+n75, n76, n77,}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ n78, n79, n80, n81, n82, n83;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ wire \ \ [2:0] traffic\_light\_state;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ assign north\_south[0] = N85;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ assign east\_west[0] = N96;\ }
+
+
+\bigskip
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ DFF\_X1 {\textbackslash}counter\_reg[0] \ ( .D(N80), .CK(clk),
+.Q(n81), .QN(n50) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ DFF\_X1 {\textbackslash}counter\_reg[1] \ ( .D(N81), .CK(clk),
+.Q(n82), .QN(n46) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ DFF\_X1 {\textbackslash}counter\_reg[2] \ ( .D(N82), .CK(clk),
+.QN(n45) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ DFF\_X1 {\textbackslash}counter\_reg[3] \ ( .D(N83), .CK(clk),
+.Q(n83) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ DFF\_X1 {\textbackslash}traffic\_light\_state\_reg[0] \ ( .D(n42),
+.CK(clk), .Q(}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ traffic\_light\_state[0]), .QN(n48) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ DFF\_X1 {\textbackslash}traffic\_light\_state\_reg[2] \ ( .D(n41),
+.CK(clk), .Q(}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ traffic\_light\_state[2]), .QN(n47) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ DFF\_X1 {\textbackslash}traffic\_light\_state\_reg[1] \ ( .D(n40),
+.CK(clk), .Q(}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ traffic\_light\_state[1]), .QN(n49) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NAND2\_X1 U51 ( .A1(n51), .A2(n52), .ZN(n42) );\ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ INV\_X1 U52 ( .A(N96), .ZN(n52) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ MUX2\_X1 U53 ( .A(n53), .B(n54), .S(traffic\_light\_state[0]),
+.Z(n51) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NOR2\_X1 U54 ( .A1(n53), .A2(n55), .ZN(n54) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ OAI22\_X1 U55 ( .A1(n47), .A2(n56), .B1(reset), .B2(n57), .ZN(n41)
+);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ AOI21\_X1 U56 ( .B1(n58), .B2(n59), .A(N96), .ZN(n57) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NOR2\_X1 U57 ( .A1(traffic\_light\_state[0]), .A2(n53), .ZN(n58) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ OAI21\_X1 U58 ( .B1(n53), .B2(n60), .A(n61), .ZN(n40) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ OAI21\_X1 U59 ( .B1(n53), .B2(n48), .A(traffic\_light\_state[1]),
+.ZN(n61) );}
+
+
+\bigskip
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+
+\begin{center}
+\begin{minipage}{6.01528in}
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+AOI211\_X1 U60 ( .C1(traffic\_light\_state[2]), .C2(n48), .A(n55), .B(}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ north\_south[1]), .ZN(n60) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ OR2\_X1 U61 ( .A1(reset), .A2(east\_west[1]), .ZN(n55) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ INV\_X1 U62 ( .A(n56), .ZN(n53) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ OAI211\_X1 U63 ( .C1(n62), .C2(n63), .A(n64), .B(n65), .ZN(n56) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ AOI211\_X1 U64 ( .C1(traffic\_light\_state[2]), .C2(n66), .A(reset),
+.B(n67),\ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ .ZN(n65) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ AND3\_X1 U65 ( .A1(n83), .A2(n68), .A3(N85), .ZN(n67) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ OAI21\_X1 U66 ( .B1(n49), .B2(n69), .A(traffic\_light\_state[0]),
+.ZN(n66) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ AOI22\_X1 U67 ( .A1(east\_west[1]), .A2(n70), .B1(n59), .B2(n81),
+.ZN(n64) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ INV\_X1 U68 ( .A(north\_south[1]), .ZN(n63) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NOR2\_X1 U69 ( .A1(n71), .A2(n72), .ZN(N83) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ XNOR2\_X1 U70 ( .A(n83), .B(n68), .ZN(n71) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ AOI211\_X1 U71 ( .C1(n45), .C2(n62), .A(n72), .B(n68), .ZN(N82) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NOR2\_X1 U72 ( .A1(n45), .A2(n62), .ZN(n68) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NOR2\_X1 U73 ( .A1(n73), .A2(n72), .ZN(N81) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ INV\_X1 U74 ( .A(n74), .ZN(n72) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ AOI21\_X1 U75 ( .B1(n75), .B2(n76), .A(reset), .ZN(n74) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NAND2\_X1 U76 ( .A1(n50), .A2(n59), .ZN(n75) );}
+
+
+\bigskip
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ AOI21\_X1 U78 ( .B1(n81), .B2(n46), .A(n70), .ZN(n73) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ AOI211\_X1 U79 ( .C1(n76), .C2(n77), .A(reset), .B(n81), .ZN(N80)
+);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NAND2\_X1 U80 ( .A1(traffic\_light\_state[1]), .A2(n47), .ZN(n77)
+);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ AOI211\_X1 U81 ( .C1(n62), .C2(north\_south[1]), .A(N85), .B(n78),
+.ZN(n76) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ INV\_X1 U82 ( .A(n79), .ZN(n78) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ AOI22\_X1 U83 ( .A1(N96), .A2(n69), .B1(east\_west[1]), .B2(n80),
+.ZN(n79) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ INV\_X1 U84 ( .A(n70), .ZN(n80) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NOR2\_X1 U85 ( .A1(n46), .A2(n81), .ZN(n70) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NOR2\_X1 U86 ( .A1(east\_west[2]), .A2(traffic\_light\_state[1]),
+.ZN(}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ east\_west[1]) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NAND4\_X1 U87 ( .A1(n83), .A2(n46), .A3(n45), .A4(n50), .ZN(n69) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NOR2\_X1 U88 ( .A1(n49), .A2(east\_west[2]), .ZN(N96) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NAND2\_X1 U89 ( .A1(traffic\_light\_state[2]),
+.A2(traffic\_light\_state[0]),\ }
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ .ZN(east\_west[2]) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NOR2\_X1 U90 ( .A1(north\_south[2]), .A2(traffic\_light\_state[0]),
+.ZN(N85) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NOR2\_X1 U91 ( .A1(n48), .A2(north\_south[2]), .ZN(north\_south[1])
+);}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NAND2\_X1 U92 ( .A1(n47), .A2(n49), .ZN(north\_south[2]) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ NAND2\_X1 U93 ( .A1(n81), .A2(n82), .ZN(n62) );}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+endmodule}
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+{\centering\rmfamily\color[rgb]{0.0,0.0,0.039215688}
+Fig(9.a): Netlist description of a Traffic Light Controller in Verilog
+HDL.\ 
+\par}
+
+{\centering \par}
+
+\begin{center}
+\begin{minipage}{6.04653in}
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE
+DFF\_X1(D)}\texttt{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{VAR}\texttt{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Q: boolean;
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ QN: boolean;
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{ASSIGN}\texttt{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ init(Q) :=
+FALSE;
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ init(QN) :=
+TRUE;}}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ next(Q) := D;}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ next(QN) := !D;\ }
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE NAND2\_X1(A1,A2)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ }\texttt{OUT :=!(A1 \& A2);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE INV\_X1(A)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ }\texttt{OUT :=!A;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE MUX2\_X1(Ain,Bin,Sin)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ OUT :=(!Sin\&Ain){\textbar}(Sin\&Bin);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE NOR2\_X1(A1,A2)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ }\texttt{OUT :=!(A1{\textbar}A2);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE OAI22\_X1(A1,A2,B1,B2)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ OUT :=!((B1{\textbar}B2)\&(A1{\textbar}A2));\ }
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE AOI21\_X1(A,B1,B2)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ }\texttt{OUT :=!(A{\textbar}(B1\&B2));}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE OAI21\_X1(A,B1,B2)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ }\texttt{OUT :=!(A\&(B1{\textbar}B2));}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE AOI211\_X1(A,B,C1,C2)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ }\texttt{OUT
+:=!(A{\textbar}B{\textbar}(C1\&C2));}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE OR2\_X1(A1,A2)}}
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+{\centering \par}
+
+\begin{center}
+\begin{minipage}{6.07292in}
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ }\texttt{OUT :=(A1{\textbar}A2);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE OAI211\_X1(A,B,C1,C2)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ }\texttt{OUT
+:=!(A\&B\&(C1{\textbar}C2));}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE AND3\_X1(A1,A2,A3)}}
+
+
+\bigskip
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ }\texttt{OUT :=(A1\&A2\&A3);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE AOI22\_X1(A1,A2,B1,B2)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ }\texttt{OUT
+:=!((A1\&A2){\textbar}(B1\&B2));}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE XNOR2\_X1(A1,A2)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ OUT :=!(A1 xor A2);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE NAND4\_X1(A1,A2,A3,A4)}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ \ \ \ OUT :=!(A1\&A2\&A3\&A4);\ }
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{MODULE main}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{VAR}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ reset: boolean;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ ESC\_counter\_reg[0]: DFF\_X1(N80);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ ESC\_counter\_reg[1]: DFF\_X1(N81);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ ESC\_counter\_reg[2]: DFF\_X1(N82);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ ESC\_counter\_reg[3]: DFF\_X1(N83);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ ESC\_traffic\_light\_state\_reg[0]:
+DFF\_X1(n42);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ ESC\_traffic\_light\_state\_reg[2]:
+DFF\_X1(n41);}}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ ESC\_traffic\_light\_state\_reg[1]: DFF\_X1(n40);}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ }\texttt{\ }\texttt{U51: NAND2\_X1(n51, n52);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ }\texttt{U52: INV\_X1(N96);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U53: MUX2\_X1(n53, n54,
+traffic\_light\_state[0]);}}
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+{\centering \par}
+
+\begin{center}
+\begin{minipage}{6.03611in}
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ U54: NOR2\_X1(n53, n55);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U55: OAI22\_X1(n47, n56, reset, n57);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U56: AOI21\_X1(n58, n59, N96);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U57: NOR2\_X1(traffic\_light\_state[0], n53);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U58: OAI21\_X1(n53, n60, n61);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U59: OAI21\_X1(n53, n48,
+traffic\_light\_state[1]);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U60: AOI211\_X1(traffic\_light\_state[2], n48,
+n55, north\_south[1]);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U61: OR2\_X1(reset, east\_west[1])}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ }\texttt{\ \ \ \ U62: INV\_X1(n56);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U63: OAI211\_X1(n62, n63, n64, n65);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U64: AOI211\_X1(traffic\_light\_state[2], n66,
+reset, n67);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U65: AND3\_X1(n83, n68, N85);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U66: OAI21\_X1(n49, n69,
+traffic\_light\_state[0]);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U67: AOI22\_X1(east\_west[1], n70, n59, n81);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U68: INV\_X1(north\_south[1]);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U69: NOR2\_X1(n71, n72);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U70: XNOR2\_X1(n83, n68);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U71: AOI211\_X1(n45, n62, n72, n68);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U72: NOR2\_X1(n45, n62);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U73: NOR2\_X1(n73, n72);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U74: INV\_X1(n74);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U75: AOI21\_X1(n75, n76, reset);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U76: NAND2\_X1(n50, n59);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U77: INV\_X1(n77);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U78: AOI21\_X1(n81, n46, n70);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U79: AOI211\_X1(n76, n77, reset, n81);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U80: NAND2\_X1(traffic\_light\_state[1], n47);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U81: AOI211\_X1(n62, north\_south[1], N85,
+n78);}}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ U82: INV\_X1(n79);\ }
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ U83: AOI22\_X1(N96, n69, east\_west[1], n80);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U84: INV\_X1(n70);}}
+
+
+\bigskip
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+
+\begin{center}
+\begin{minipage}{6.04583in}
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U85: NOR2\_X1(n46, n81);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U86: NOR2\_X1(east\_west[2],
+traffic\_light\_state[1]);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U87: NAND4\_X1(n83, n46, n45, n50);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U88: NOR2\_X1(n49, east\_west[2]);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U89:
+NAND2\_X1(traffic\_light\_state[2],\ }\texttt{\ \ }\texttt{\ \ \ }\texttt{\ \ traffic\_light\_state[0]);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U90: NOR2\_X1(north\_south[2],
+traffic\_light\_state[0]);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U91: NOR2\_X1(n48, north\_south[2]);}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ U92: NAND2\_X1(n47, n49);}}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ U93: NAND2\_X1(n81, n82);\ }
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{ASSIGN}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ init(reset) := TRUE;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{DEFINE}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n50 := ESC\_counter\_reg[0].QN;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n81 := ESC\_counter\_reg[0].Q;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n46 := ESC\_counter\_reg[1].QN;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n82 := ESC\_counter\_reg[1].Q;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ n45 := ESC\_counter\_reg[2].Q;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ n83 := ESC\_counter\_reg[3].Q;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n48 := ESC\_traffic\_light\_state\_reg[0].QN;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ traffic\_light\_state[0] :=
+ESC\_traffic\_light\_state\_reg[0].Q;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n47 := ESC\_traffic\_light\_state\_reg[2].QN;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ traffic\_light\_state[2] :=
+ESC\_traffic\_light\_state\_reg[2].Q;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n49 := ESC\_traffic\_light\_state\_reg[1].QN;}}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ traffic\_light\_state[1] :=
+ESC\_traffic\_light\_state\_reg[1].Q;\ }
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{n42 := U51.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n52 := U52.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n51 := U53.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n54 := U54.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n41 := U55.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n57 := U56.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n58 := U57.OUT;}}
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+
+\begin{center}
+\begin{minipage}{6.0625in}
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{n40 := U58.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n61 := U59.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ }\texttt{\ \ \ \ n60 := U60.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n55 := U61.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n53 := U62.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n56 := U63.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n65 := U64.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n67 := U65.OUT;}}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ \ \ \ \ n66 := U66.OUT;}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n64 := U67.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n63 := U68.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ }\texttt{N83 := U69.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n71 := U70.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ }\texttt{N82 := U71.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n68 := U72.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ }\texttt{N81 := U73.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n72 := U74.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n74 := U75.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n75 := U76.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n59 := U77.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n73 := U78.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ }\texttt{N80 := U79.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n77 := U80.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n76 := U81.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n78 := U82.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n79 := U83.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n80 := U84.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n70 := U85.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ east\_west[1] := U86.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n69 := U87.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ }\texttt{N96 := U88.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ east\_west[2] := U89.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ }\texttt{N85 := U90.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ north\_south[1] := U91.OUT;}}
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+
+\begin{center}
+\begin{minipage}{6.07292in}
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ north\_south[2] := U92.OUT;}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{\ \ \ \ \ \ \ \ n62 := U93.OUT;}}
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+{\centering\rmfamily\color[rgb]{0.0,0.0,0.039215688}
+Fig(9.b): v2NuSMV based translation of a Traffic Light Controller into
+the input language of NuSMV
+\par}
+
+
+\bigskip
+
+{\rmfamily\color[rgb]{0.0,0.0,0.039215688}
+\ \ \ \ It was mentioned earlier that v2NuSMV also displays the
+information about each and every identifier parsed. This is as shown in
+the below figure. The case taken is that of a simple 2 bit binary
+counter.\ }
+
+
+\bigskip
+
+
+
+\begin{center}
+\begin{minipage}{6.07292in}
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+Items:itemtype: LISTOFWIRES}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemvalue:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+Wire name: N5}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{}-{}-{\textgreater} Width: (0, 0)}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+Wire name: N6}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{}-{}-{\textgreater} Width: (0, 0)}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+Wire name: N7}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{}-{}-{\textgreater} Width: (0, 0)}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+Wire name: n4}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{}-{}-{\textgreater} Width: (0, 0)}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+Wire name: n5}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{}-{}-{\textgreater} Width: (0, 0)}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+Wire name: n6}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{}-{}-{\textgreater} Width: (0, 0)}
+
+
+\bigskip
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemtype: LISTOFWIRES}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemvalue:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+Wire name: n7}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{}-{}-{\textgreater} Width: (1, 0)}
+
+
+\bigskip
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemtype: MODULEINSTANCE}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemvalue:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Module instance. Name ESC\_value\_reg[0] of type DFF\_X1}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Ports found:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ D ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ N5}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ CK ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ clk}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ Q ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ value[0]}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ QN ;
+\ \ porttype: \ None ; \ \ portwidth: \ None ; \ \ connection: \ n5}}
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+{\centering \par}
+
+\begin{center}
+\begin{minipage}{5.98958in}
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemtype: MODULEINSTANCE}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemvalue:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Module instance. Name ESC\_value\_reg[1] of type DFF\_X1}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Ports found:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ D ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ N6}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ CK ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ clk}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ Q ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ value[1]}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ QN ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ n4}
+
+
+\bigskip
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemtype: MODULEINSTANCE}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemvalue:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Module instance. Name carry\_out\_reg of type DFF\_X1}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Ports found:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ D ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ N7}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ CK ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ clk}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ Q ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ carry\_out}
+
+
+\bigskip
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemtype: MODULEINSTANCE}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemvalue:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Module instance. Name U9 of type NOR3\_X1}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Ports found:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ A1 ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ n4}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ A2 ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ reset}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ A3 ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ n5}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ ZN ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ N7}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemtype: MODULEINSTANCE}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemvalue:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Module instance. Name U10 of type MUX2\_X1}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Ports found:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ A ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ N5}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ B ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ n6}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ S ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ n4}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ Z ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ N6}
+
+
+\bigskip
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+
+\begin{center}
+\begin{minipage}{6.04167in}
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemtype: MODULEINSTANCE}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemvalue:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Module instance. Name U11 of type NOR2\_X1}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Ports found:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ A1 ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ reset}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ A2 ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ n5}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ ZN ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ n6}
+
+
+\bigskip
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemtype: MODULEINSTANCE}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemvalue:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Module instance. Name U12 of type NOR2\_X1}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} Ports found:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ A1 ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ reset}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ A2 ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ value[0]}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{}-{}-{}-{\textgreater} \ {\textgreater} portname: \ ZN ; \ \ porttype:
+\ None ; \ \ portwidth: \ None ; \ \ connection: \ N5}
+
+
+\bigskip
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemtype: LISTOFPORTS}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemvalue:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} portname: \ carry\_out ; \ \ porttype: \ output ;
+\ \ portwidth: \ (0, 0) ; \ \ connection: \ None}
+
+
+\bigskip
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemtype: LISTOFPORTS}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemvalue:}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} portname: \ clk ; \ \ porttype: \ input ; \ \ portwidth:
+\ (0, 0) ; \ \ connection: \ None}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+{\textgreater} portname: \ reset ; \ \ porttype: \ input ;
+\ \ portwidth: \ (0, 0) ; \ \ connection: \ None}
+
+
+\bigskip
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemtype: LISTOFPORTS}
+
+{\ttfamily\color[rgb]{0.0,0.0,0.039215688}
+itemvalue:}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\texttt{{\textgreater} portname: \ value ; \ \ porttype: \ output ;
+\ \ portwidth: \ (1, 0) ; \ \ connection: \ None}}
+\end{minipage}
+\end{center}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+{\centering\rmfamily\color[rgb]{0.0,0.0,0.039215688}
+Fig(10): Display of the information extracted by v2NuSMV in the case of
+a simple 2 bit binary counter
+\par}
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textbf{VI CONCLUSION}}}
+
+{\rmfamily\color[rgb]{0.0,0.0,0.039215688}
+From the results obtained of the translation and the automatic input
+language generation of NuSMV, it can be concluded that the task of
+translating a subset systems designed in Verilog HDL to the input
+language of the open source model checker NuSMV \ is possible and can
+be carried out successfully with v2NuSMV. More grammar can be included
+in parsing algorithm and hence code can be extended as much as possible
+and can be made as general as possible. This can be a very useful in
+the area of Formal Model Checking Area, especially in the areas which
+employ NuSMV as the model checker. The results also imply that a
+translator which contains the full grammar of Verilog HDL can be
+designed to translate not only a particular subset of system but in
+fact any system designed in Verilog HDL. \ In this way the open source
+tool NuSMV can be used for hardware verification on gate level Verilog
+netlists.\ }
+
+
+\bigskip
+
+{\centering\color[rgb]{0.0,0.0,0.039215688}
+\textrm{\textbf{REFERENCES\ }}
+\par}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[1] N. Wirth. Digital
+Circuit Design. Springer, New York, NY, USA, 1985.}\newline
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[2] Y. N. Patt, S. J.
+Patel, M. Evers, D. H. Friendly, and J. Stark. One billion transistors,
+one uniprocessor, one chip. IEEE Computer, 30(9):51--57, 1997.[200B?]}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[3] Satyananda T.K,
+Danhyun Lee, Sungwon Kang: Formal Verification of Consistency between
+Feature Model and Software Architecture in Software Product Line. In
+Software Engineering Advances. 2007.
+ICSEA,~}\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{~}\href{http://dx.doi.org/10.1109/ICSEA.2007.33}{\foreignlanguage{english}{\textcolor[rgb]{0.06666667,0.33333334,0.8}{10.1109/ICSEA.2007.33}}}\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{,
+Page(s): 10, 2007.}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[4] Satyananda T. K.,
+et al., Identifying Traceability between Feature Model and Software
+Architecture in Software Product Line using Formal Concept Analysis,
+International Conference on Computational Science and its Applications,
+2007, pp: 380-388, Aug. 2007.}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[5] E. M. Clarke, O.
+Grumberg, and D. Peled. Model Checking. MIT Press,Boston, MA, USA,
+2000.[200B?]}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[6] A. Cimatti, E. M.
+Clarke, F. Giunchiglia, and M. Roveri. NuSMV: A new symbolic model
+veri[FB01?]er. In Proc. of 11th Conference on Computer-Aided
+Veri[FB01?]cation (CAV{\textquoteright}99), pages 495--499, 1999.}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[7]\ }\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{Clark
+D.P, hen,M., Tucker J.V: Automatic program translation - a third way.
+Multimedia Software Engineering Proceedings Page(s): 265 - 272, 2004.}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[8] G. Lindsrom,
+{\textquotedbl}Programming with
+Python,{\textquotedbl}}\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{~}\textit{\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{IT
+Professional,}}\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{~}\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{vol.
+7, no. 5, 2005, pp. 10--16.}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[9] M.E. Lesk and E.
+Schmidt,{\textquotedbl}Lex-a lexical analyzer generator,{\textquotedbl}
+tech. rep., Bell Telephone Laboratories, 1975.}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[10]\ }\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{S.C.
+Johnson,{\textquotedbl}Yacc: Yet another compiler
+compiler,{\textquotedbl} tech. rep., Bell Telephone Laboratories,
+1975.}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[11]
+{\textquotedbl}IEEE Std 1365-2001, IEEE Standard Hardware Description
+Language Based on the Verilog Hardware Description
+Language{\textquotedbl} IEEE, Incs. (Verilog HDL).}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[12] Hyperlinked
+Grammar for Verilog
+2001,\ }\url{http://www.syncad.com/VeriLogger_bnf_Syntax_Verilog_2001.htm}.}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+[13]\ \textcolor[rgb]{0.13333334,0.13333334,0.13333334}{\ A. V. Aho and
+J. D. Ullman. Principles of Compiler Design. Addison Wesley, Boston,
+MA, USA, 1977.}}
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\newline
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[14] A. V. Aho, R.
+Sethi, and J. D. Ullman. Compilers: Principles, Techniques, and Tools.
+Addison Wesley, Boston, MA, USA, 1986.}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+\textcolor[rgb]{0.13333334,0.13333334,0.13333334}{[15]
+NangateOpenCellLibrary,\ }\url{http://opencores.org/websvn,filedetails?repname=async_sdm_noc&path=/async_sdm_noc/branches/init/lib/NangateOpenCellLibrary_typical_conditional.v}}
+
+
+\bigskip
+
+{\color[rgb]{0.0,0.0,0.039215688}
+[16]\ \textcolor[rgb]{0.13333334,0.13333334,0.13333334}{Link for
+ModelSim User{\textquotesingle}s Guide, The Mathworks, 2006.}}
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+\end{document}
