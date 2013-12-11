@@ -1,0 +1,164 @@
+MODULE DFF_X1(D)                                                                                                     
+VAR                                                                                                                  
+                        Q: boolean;                                                                                  
+                        QN: boolean;                                                                                 
+ASSIGN                                                                                                               
+                        init(Q) := FALSE;                                                                            
+                        init(QN) := TRUE;
+                        next(Q) := D;
+                        next(QN) := !D; 
+MODULE NAND2_X1(A1,A2)
+DEFINE
+           OUT :=!(A1 & A2);
+MODULE INV_X1(A)
+DEFINE
+           OUT :=!A;
+MODULE MUX2_X1(Ain,Bin,Sin)
+DEFINE
+           OUT :=(!Sin&Ain)|(Sin&Bin);
+MODULE NOR2_X1(A1,A2)
+DEFINE
+           OUT :=!(A1|A2);
+MODULE OAI22_X1(A1,A2,B1,B2)
+DEFINE
+           OUT :=!((B1|B2)&(A1|A2)); 
+MODULE AOI21_X1(A,B1,B2)
+DEFINE
+           OUT :=!(A|(B1&B2));
+MODULE OAI21_X1(A,B1,B2)
+DEFINE
+           OUT :=!(A&(B1|B2));
+MODULE AOI211_X1(A,B,C1,C2)
+DEFINE
+           OUT :=!(A|B|(C1&C2));
+MODULE OR2_X1(A1,A2)
+DEFINE
+           OUT :=(A1|A2);
+MODULE OAI211_X1(A,B,C1,C2)
+DEFINE
+           OUT :=!(A&B&(C1|C2));
+MODULE AND3_X1(A1,A2,A3)
+
+
+DEFINE
+           OUT :=(A1&A2&A3);
+MODULE AOI22_X1(A1,A2,B1,B2)
+DEFINE
+           OUT :=!((A1&A2)|(B1&B2));
+MODULE XNOR2_X1(A1,A2)
+DEFINE
+           OUT :=!(A1 xor A2);
+MODULE NAND4_X1(A1,A2,A3,A4)
+DEFINE
+           OUT :=!(A1&A2&A3&A4); 
+MODULE main
+VAR
+        reset: boolean;
+        ESC_counter_reg[0]: DFF_X1(N80);
+        ESC_counter_reg[1]: DFF_X1(N81);
+        ESC_counter_reg[2]: DFF_X1(N82);
+        ESC_counter_reg[3]: DFF_X1(N83);
+        ESC_traffic_light_state_reg[0]: DFF_X1(n42);
+        ESC_traffic_light_state_reg[2]: DFF_X1(n41);
+        ESC_traffic_light_state_reg[1]: DFF_X1(n40);
+	      U51: NAND2_X1(n51, n52);
+        U52: INV_X1(N96);
+        U53: MUX2_X1(n53, n54, traffic_light_state[0]);
+        U54: NOR2_X1(n53, n55);
+        U55: OAI22_X1(n47, n56, reset, n57);
+        U56: AOI21_X1(n58, n59, N96);
+        U57: NOR2_X1(traffic_light_state[0], n53);
+        U58: OAI21_X1(n53, n60, n61);
+        U59: OAI21_X1(n53, n48, traffic_light_state[1]);
+        U60: AOI211_X1(traffic_light_state[2], n48, n55, north_south[1]);
+        U61: OR2_X1(reset, east_west[1]);
+ 	      U62: INV_X1(n56);
+        U63: OAI211_X1(n62, n63, n64, n65);
+        U64: AOI211_X1(traffic_light_state[2], n66, reset, n67);
+        U65: AND3_X1(n83, n68, N85);
+        U66: OAI21_X1(n49, n69, traffic_light_state[0]);
+        U67: AOI22_X1(east_west[1], n70, n59, n81);
+        U68: INV_X1(north_south[1]);
+        U69: NOR2_X1(n71, n72);
+        U70: XNOR2_X1(n83, n68);
+        U71: AOI211_X1(n45, n62, n72, n68);
+        U72: NOR2_X1(n45, n62);
+        U73: NOR2_X1(n73, n72);
+        U74: INV_X1(n74);
+        U75: AOI21_X1(n75, n76, reset);
+        U76: NAND2_X1(n50, n59);
+        U77: INV_X1(n77);
+        U78: AOI21_X1(n81, n46, n70);
+        U79: AOI211_X1(n76, n77, reset, n81);
+        U80: NAND2_X1(traffic_light_state[1], n47);
+        U81: AOI211_X1(n62, north_south[1], N85, n78);
+        U82: INV_X1(n79); 
+	      U83: AOI22_X1(N96, n69, east_west[1], n80);
+        U84: INV_X1(n70);
+        U85: NOR2_X1(n46, n81);
+        U86: NOR2_X1(east_west[2], traffic_light_state[1]);
+        U87: NAND4_X1(n83, n46, n45, n50);
+        U88: NOR2_X1(n49, east_west[2]);
+        U89: NAND2_X1(traffic_light_state[2], 		 	traffic_light_state[0]);
+        U90: NOR2_X1(north_south[2], traffic_light_state[0]);
+        U91: NOR2_X1(n48, north_south[2]);
+        U92: NAND2_X1(n47, n49);
+        U93: NAND2_X1(n81, n82); 
+ASSIGN
+        init(reset) := TRUE;
+DEFINE
+        n50 := ESC_counter_reg[0].QN;
+        n81 := ESC_counter_reg[0].Q;
+        n46 := ESC_counter_reg[1].QN;
+        n82 := ESC_counter_reg[1].Q;
+                n45 := ESC_counter_reg[2].Q;
+                n83 := ESC_counter_reg[3].Q;
+        n48 := ESC_traffic_light_state_reg[0].QN;
+        traffic_light_state[0] := ESC_traffic_light_state_reg[0].Q;
+        n47 := ESC_traffic_light_state_reg[2].QN;
+        traffic_light_state[2] := ESC_traffic_light_state_reg[2].Q;
+        n49 := ESC_traffic_light_state_reg[1].QN;
+        traffic_light_state[1] := ESC_traffic_light_state_reg[1].Q; 
+        n42 := U51.OUT;
+        n52 := U52.OUT;
+        n51 := U53.OUT;
+        n54 := U54.OUT;
+        n41 := U55.OUT;
+        n57 := U56.OUT;
+        n58 := U57.OUT;
+        n40 := U58.OUT;
+        n61 := U59.OUT;
+ 	      n60 := U60.OUT;
+        n55 := U61.OUT;
+        n53 := U62.OUT;
+        n56 := U63.OUT;
+        n65 := U64.OUT;
+        n67 := U65.OUT;
+        n66 := U66.OUT;
+        n64 := U67.OUT;
+        n63 := U68.OUT;
+        N83 := U69.OUT;
+        n71 := U70.OUT;
+        N82 := U71.OUT;
+        n68 := U72.OUT;
+        N81 := U73.OUT;
+        n72 := U74.OUT;
+        n74 := U75.OUT;
+        n75 := U76.OUT;
+        n59 := U77.OUT;
+        n73 := U78.OUT;
+        N80 := U79.OUT;
+        n77 := U80.OUT;
+        n76 := U81.OUT;
+        n78 := U82.OUT;
+        n79 := U83.OUT;
+        n80 := U84.OUT;
+        n70 := U85.OUT;
+	      east_west[1] := U86.OUT;
+        n69 := U87.OUT;
+        N96 := U88.OUT;
+        east_west[2] := U89.OUT;
+        N85 := U90.OUT;
+        north_south[1] := U91.OUT;
+        north_south[2] := U92.OUT;
+        n62 := U93.OUT;
