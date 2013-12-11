@@ -1,0 +1,44 @@
+MODULE DFF_X1(D)
+VAR
+                        Q: boolean;
+                        QN: boolean;
+ASSIGN
+                        init(Q) := FALSE;
+                        init(QN) := TRUE;
+                        next(Q) := D;
+                        next(QN) := !D;
+MODULE NOR3_X1(A1,A2,A3)
+DEFINE
+           OUT :=!(A1|A2|A3);
+MODULE MUX2_X1(Ain,Bin,Sin)
+DEFINE
+           OUT :=(!Sin&Ain)|(Sin&Bin);
+MODULE NOR2_X1(A1,A2)
+DEFINE
+           OUT :=!(A1|A2);
+MODULE main
+VAR
+        reset: boolean;
+        ESC_value_reg[0]: DFF_X1(N5);
+        ESC_value_reg[1]: DFF_X1(N6);
+        carry_out_reg: DFF_X1(N7);
+        U9: NOR3_X1(n4, reset, n5);
+        U10: MUX2_X1(N5, n6, n4);
+        U11: NOR2_X1(reset, n5);
+        U12: NOR2_X1(reset, value[0]); 
+ASSIGN
+        init(reset) := TRUE;
+DEFINE
+        n5 := ESC_value_reg[0].QN;
+        value[0] := ESC_value_reg[0].Q;
+        n4 := ESC_value_reg[1].QN;
+        value[1] := ESC_value_reg[1].Q;
+        carry_out := carry_out_reg.Q;
+        N7 := U9.OUT;
+        N6 := U10.OUT;
+        n6 := U11.OUT;
+        N5 := U12.OUT;
+
+
+
+
